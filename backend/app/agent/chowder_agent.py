@@ -34,15 +34,16 @@ Respond with your reasoning and final decision.
 
 
 from langchain.agents import create_agent
-from langgraph.checkpoint.memory import MemoryCheckpoint
+from langgraph.checkpoint.memory import InMemorySaver
 from langchain.agents.structured_output import ToolStrategy
 from app.models.agent import AgentResponse
+from app.agent.tools import fetch_food, make_payment, log_action
 
-checkpointer = MemoryCheckpoint()
+checkpointer = InMemorySaver()
 
 chowder_agent = create_agent(
     model="claude-sonnet-4-6",
-    tools=[],
+    tools=[fetch_food, make_payment, log_action],
     system_prompt=SYSTEM_PROMPT,
     response_format=ToolStrategy(AgentResponse),
     checkpointer=checkpointer,
