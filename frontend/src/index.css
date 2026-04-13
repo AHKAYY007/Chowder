@@ -1,0 +1,146 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #080b12;
+  color: #f4f7ff;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+html, body, #root {
+  min-height: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(1200px, 96vw);
+  margin: 0 auto;
+  padding: 2.5rem 1rem 3rem;
+}
+
+header {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+header h1 {
+  margin: 0;
+  font-size: clamp(2.15rem, 3vw, 3.5rem);
+}
+
+header p {
+  margin: 0;
+  max-width: 42rem;
+  color: #b8c0d3;
+}
+
+.control-panel,
+.response-panel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 1.2rem;
+  padding: 1.5rem;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.18);
+}
+
+form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+label {
+  display: grid;
+  gap: 0.65rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+textarea,
+input,
+select {
+  width: 100%;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  padding: 0.9rem 1rem;
+  background: rgba(255, 255, 255, 0.04);
+  color: #f7f8ff;
+  outline-offset: 2px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.field-row {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+button {
+  width: fit-content;
+  padding: 0.95rem 1.4rem;
+  border-radius: 999px;
+  border: none;
+  color: #080b12;
+  background: linear-gradient(135deg, #63d9e3, #69b0ff);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s ease, filter 0.18s ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error-box {
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 97, 97, 0.16);
+  color: #ffbcbc;
+  border: 1px solid rgba(255, 97, 97, 0.28);
+}
+
+.card {
+  padding: 1.5rem;
+  border-radius: 1.2rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.response-message {
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+}
+
+.response-meta {
+  margin: 0.5rem 0;
+  color: #d6dcf2;
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    padding: 1.5rem 0.75rem 2rem;
+  }
+}

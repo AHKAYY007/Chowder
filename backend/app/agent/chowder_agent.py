@@ -1,3 +1,9 @@
+from langchain.chat_models import init_chat_model
+from langchain.agents import create_agent
+from app.agent.tools import fetch_food, make_payment, log_action
+from app.core.config import settings
+
+
 SYSTEM_PROMPT = """
 You are Chowder, an autonomous AI food agent.
 
@@ -32,19 +38,20 @@ You MUST:
 Respond with your reasoning and final decision.
 """
 
-
-from langchain.agents import create_agent
-from langgraph.checkpoint.memory import InMemorySaver
-from langchain.agents.structured_output import ToolStrategy
-from app.models.agent import AgentResponse
-from app.agent.tools import fetch_food, make_payment, log_action
-
-checkpointer = InMemorySaver()
-
-chowder_agent = create_agent(
-    model="claude-sonnet-4-6",
-    tools=[fetch_food, make_payment, log_action],
-    system_prompt=SYSTEM_PROMPT,
-    response_format=ToolStrategy(AgentResponse),
-    checkpointer=checkpointer,
+llm = init_chat_model(
+    f"groq:{settings.groq_model}",
+    api_key=settings.groq_api_key,
+    temperature=0.7,
 )
+
+tools = [fetch_food, make_payment, log_action]
+
+agent = create_agent(
+    model=llm,
+    tools=tools,
+    system_prompt=SYSTEM_PROMPT,
+)
+
+
+def run_agent(input_text: str):
+    return agent.invoke({"input": input_text})

@@ -1,0 +1,40 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-4f7eb4ffa412fd4e718f705099e8e788e2f99181",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "compilerType": "solc",
+  "userSourceNameMap": {
+    "contracts/KiteLogger.sol": "project/contracts/KiteLogger.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/KiteLogger.sol": {
+        "content": "// SPDX-License-Identifier: UNLICENSED\npragma solidity ^0.8.28;\n\ncontract KiteLogger {\n    address public owner;\n    uint256 public nextLogId = 1;\n\n    struct LogEntry {\n        address agent;\n        address user;\n        string action;\n        string inputMessage;\n        string decision;\n        string reason;\n        uint256 amount;\n        uint256 timestamp;\n    }\n\n    mapping(uint256 => LogEntry) public logs;\n    mapping(address => bool) public authorizedAgents;\n    mapping(address => uint256[]) private userLogIds;\n\n    event AgentAuthorized(address indexed agent);\n    event AgentRevoked(address indexed agent);\n    event LogCreated(uint256 indexed logId, address indexed agent, address indexed user, string action, uint256 amount);\n\n    modifier onlyOwner() {\n        require(msg.sender == owner, \"KiteLogger: caller is not owner\");\n        _;\n    }\n\n    modifier onlyAuthorizedAgent() {\n        require(authorizedAgents[msg.sender], \"KiteLogger: caller is not authorized\");\n        _;\n    }\n\n    constructor() {\n        owner = msg.sender;\n        authorizedAgents[msg.sender] = true;\n    }\n\n    function authorizeAgent(address agent) external onlyOwner {\n        require(agent != address(0), \"KiteLogger: invalid agent\");\n        authorizedAgents[agent] = true;\n        emit AgentAuthorized(agent);\n    }\n\n    function revokeAgent(address agent) external onlyOwner {\n        require(agent != address(0), \"KiteLogger: invalid agent\");\n        authorizedAgents[agent] = false;\n        emit AgentRevoked(agent);\n    }\n\n    function logAction(\n        address user,\n        string calldata action,\n        string calldata inputMessage,\n        string calldata decision,\n        string calldata reason,\n        uint256 amount\n    ) external onlyAuthorizedAgent returns (uint256) {\n        require(user != address(0), \"KiteLogger: invalid user\");\n        require(bytes(action).length > 0, \"KiteLogger: action required\");\n        require(bytes(decision).length > 0, \"KiteLogger: decision required\");\n        require(amount > 0, \"KiteLogger: amount must be positive\");\n\n        uint256 logId = nextLogId++;\n        logs[logId] = LogEntry({\n            agent: msg.sender,\n            user: user,\n            action: action,\n            inputMessage: inputMessage,\n            decision: decision,\n            reason: reason,\n            amount: amount,\n            timestamp: block.timestamp\n        });\n        userLogIds[user].push(logId);\n\n        emit LogCreated(logId, msg.sender, user, action, amount);\n        return logId;\n    }\n\n    function getUserLogIds(address user) external view returns (uint256[] memory) {\n        return userLogIds[user];\n    }\n}\n"
+      }
+    }
+  }
+}

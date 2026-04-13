@@ -1,0 +1,47 @@
+import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mocha-ethers";
+import { configVariable, defineConfig } from "hardhat/config";
+import * as dotenv from "dotenv";
+dotenv.config();
+
+export default defineConfig({
+  plugins: [hardhatToolboxMochaEthersPlugin],
+  solidity: {
+    profiles: {
+      default: {
+        version: "0.8.28",
+      },
+      production: {
+        version: "0.8.28",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    },
+  },
+  networks: {
+    hardhatMainnet: {
+      type: "edr-simulated",
+      chainType: "l1",
+    },
+    hardhatOp: {
+      type: "edr-simulated",
+      chainType: "op",
+    },
+    sepolia: {
+      type: "http",
+      chainType: "l1",
+      url: configVariable("SEPOLIA_RPC_URL"),
+      accounts: [configVariable("SEPOLIA_PRIVATE_KEY")],
+    },
+    kiteTestnet: {
+      type: "http",
+      chainType: "l1",
+      url: process.env.KITE_RPC_URL || "https://rpc-testnet.gokite.ai",
+      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+      chainId: process.env.KITE_CHAIN_ID ? Number(process.env.KITE_CHAIN_ID) : 2367,
+    },
+  },
+});

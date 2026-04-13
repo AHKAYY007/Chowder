@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 import uvicorn
 from contextlib import asynccontextmanager
+from fastapi.middleware.cors import CORSMiddleware
+from app.routers.intents import router as intents_router
 
 
 @asynccontextmanager
@@ -18,6 +20,17 @@ app = FastAPI(
     version='0.1.0',
     lifespan=lifespan
 )
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4173"],  # Allow the frontend origin
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(intents_router)
 
 
 @app.get('/')
