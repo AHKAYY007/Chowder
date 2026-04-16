@@ -16,3 +16,6 @@ wheels/
 
 # vscode
 .vscode/
+
+node_modules/
+pnpm-workspace.yaml
